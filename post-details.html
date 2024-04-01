@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="cssposts.css">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    // На странице post-details.html:
+    // 7 Вивести всю, без виключення, інформацію про об'єкт post на який клікнули .
+    // 8 Нижчє інформаці про пост, вивести всі коментарі поточного поста
+    // (ендпоінт  - https://jsonplaceholder.typicode.com/posts/POST_ID/comments)
+
+    // post-details.html - блок з інфою про пост зверху. Коментарі - по 4 в ряд.
+    //     Всі елементи котрі характеризують users, posts, comments візуалізувати, так, щоб було видно що це блоки (дати фон. марджини і тд)
+
+    let divbaty = document.createElement('div')
+    document.body.appendChild(divbaty)
+    divbaty.classList.add('divbaty')
+
+    let urlpost = new URL(location.href).searchParams.get('id')
+    let newurlpost = `https://jsonplaceholder.typicode.com/posts/${urlpost}`
+
+    fetch(newurlpost)
+        .then(value => value.json())
+        .then(post => {
+            console.log(location)
+            console.log(post)
+            let divBaty1 = document.createElement('div');
+            divBaty1.classList.add('divBaty1')
+
+            let p1 = document.createElement('p')
+            p1.innerText = `UserId: ${post.userId}
+                ID: ${post.id}
+                Title: ${post.title}
+                Body: ${post.body}
+                `
+
+            divBaty1.appendChild(p1)
+
+            let divBaty2 = document.createElement('div')
+            divBaty2.classList.add('divBaty2')
+            let newurlcoment = `https://jsonplaceholder.typicode.com/posts/${post.id}/comments`
+            fetch(newurlcoment)
+                .then(value => value.json())
+                .then(coments => {
+                    for (const coment of coments) {
+                        let divcoments = document.createElement('div')
+                        divcoments.classList.add('divcoments')
+                        let pcoments = document.createElement('p');
+                        pcoments.innerText = `Name ${coment.id}: ${coment.name}`
+                        let img = document.createElement('img')
+                        img.src = 'png/coment.png'
+
+                        divcoments.append(pcoments,img)
+                        divBaty2.appendChild(divcoments)
+                    }
+                })
+
+            divbaty.append(divBaty1,divBaty2)
+        })
+
+
+</script>
+</body>
+</html>

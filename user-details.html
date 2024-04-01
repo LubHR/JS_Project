@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="cssuser.css">
+    <title>User</title>
+</head>
+<body>
+
+<script>
+
+    // На странице user-details.html:
+    // 4 Вивести всю, без виключення, інформацію про об'єкт user на який клікнули
+    // 5 Додати кнопку "post of current user", при кліку на яку, з'являються title всіх постів поточного юзера
+    // (для получения постов используйте эндпоинт https://jsonplaceholder.typicode.com/users/USER_ID/posts)
+    // 6 Каждому посту додати кнопку/посилання, при кліку на яку відбувається перехід на сторінку
+    // post-details.html, котра має детальну інфу про поточний пост.
+
+    // user-details.html - блок з інфою про user зверху сторінки. Кнопка нижчє, на 90% ширини сторінки, по центру.
+    console.log(location)
+
+    let userid = new URL(location.href).searchParams.get('id')
+    let newURL = 'https://jsonplaceholder.typicode.com/users/' + userid
+
+    fetch(newURL)
+        .then(value => value.json())
+        .then(user => {
+            console.log(user)
+
+            let divbaty = document.createElement('div');
+            divbaty.classList.add('Baty')
+            document.body.appendChild(divbaty)
+
+            let h21 = document.createElement('h2')
+            h21.innerText = `Name - ${user.name}`
+            h21.classList.add('h212')
+
+            let h22 = document.createElement('h2')
+            h22.innerText = `ID:${user.id}`
+            h22.classList.add('h212')
+
+            let divinformation = document.createElement('div')
+            divinformation.classList.add('divinformation')
+            let p1 = document.createElement('p');
+            p1.innerText = `Username: ${user.username}
+            email: ${user.email}
+            phone: ${user.phone}`
+            divinformation.append(p1)
+
+
+            let divAddress = document.createElement('div')
+            divAddress.classList.add('divAddress')
+            let h3Address = document.createElement('h3')
+            h3Address.innerText = 'Address'
+            h3Address.classList.add('h3h3Address')
+            let p2ad = document.createElement('p')
+            let address = user.address
+            p2ad.innerText = `Street - ${address.street}
+            Suite - ${address.suite}
+            City - ${address.city}
+            Zipcode - ${address.zipcode}
+            Geo - lat:"${address.geo.lat}" lng:"${address.geo.lng}"`
+            divAddress.append(h3Address,p2ad)
+
+            let divCompany = document.createElement('div')
+            divCompany.classList.add('divCompany')
+            let h3Compane = document.createElement('p')
+            h3Compane.classList.add('h3Compane')
+            let p3comp = document.createElement('p')
+            let company = user.company
+            p3comp.innerText = `Company: ${company.name}
+            Use: ${company.catchPhrase}
+            Product: ${company.bs}`
+            divCompany.append(h3Compane,p3comp)
+
+
+            divbaty.append(h21,h22, divinformation, divAddress, divCompany)
+
+            let divButton = document.createElement('div')
+            document.body.appendChild(divButton)
+            divButton.classList.add('divButton')
+            let button = document.createElement('button')
+            button.innerText = 'Post of current user'
+
+            divButton.appendChild(button)
+
+            let divBaty2 = document.createElement('div')
+            divBaty2.classList.add('divBaty2')
+            document.body.appendChild(divBaty2)
+
+
+            let urlpost = new URL(location.href).searchParams.get('id')
+            let newurlpost = `https://jsonplaceholder.typicode.com/users/${urlpost}/posts`
+
+            let flag = false;
+
+            button.addEventListener('click', () => {
+                if (!flag) {
+                    fetch(newurlpost)
+                        .then(value => value.json())
+                        .then(posts => {
+                            console.log(posts)
+
+                            for (const post of posts) {
+                                console.log(post)
+
+                                let divPosts = document.createElement('div')
+                                divPosts.classList.add('divPosts')
+                                let pbaty1 = document.createElement('p')
+                                pbaty1.innerText = `Post: ${post.title}`
+
+                                let ainfo = document.createElement('a')
+                                ainfo.href = `post-details.html?id=${post.id}`
+                                ainfo.innerText = '\u27A1 Information of this post';
+
+                                ainfo.addEventListener("click", () => {
+                                    location.href = "post-details?id=" + post.id
+                                })
+                                divPosts.append(pbaty1, ainfo)
+                                divBaty2.appendChild(divPosts)
+                            }
+                        })
+                    flag = true;
+                }
+            });
+
+
+        })
+</script>
+</body>
+</html>
